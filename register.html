@@ -144,14 +144,11 @@ registerForm.addEventListener("submit", async function(event) {
             }
         });
 
-    if (error) {
-       if (error) {
-    console.error("Supabase signup error:", error);
-
-    message.textContent =
-        error.message ||
-        error.error_description ||
-        "Registration failed. Please try again.";
+   if (error) {
+    message.textContent = JSON.stringify(error);
+    console.log(error);
+    return;
+}
 
     return;
 }
