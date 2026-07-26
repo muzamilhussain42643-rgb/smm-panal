@@ -56,8 +56,15 @@
             </div>
 
         </div>
+<div class="card" style="margin-top:30px;">
 
-        <div class="card" style="margin-top:30px;">
+    <h2>💳 Pending Payments</h2>
+
+    <div id="paymentsList">
+        Loading payments...
+    </div>
+
+</div>
             <h2>Quick Actions</h2>
 
             <p>Admin dashboard is ready.</p>
@@ -173,7 +180,118 @@ async function loadStats() {
         .textContent = "—";
 }
 
+async function loadPayments() {
 
+    const paymentsList =
+        document.getElementById("paymentsList");
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("payments")
+        .select("*")
+        .eq("status", "Pending")
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+        console.error(error);
+        paymentsList.textContent =
+            "Unable to load payments.";
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        paymentsList.textContent =
+            "No pending payments.";
+        return;
+    }
+
+    paymentsList.innerHTML = "";
+
+    data.forEach(payment => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "card";
+
+        div.innerHTML = `
+            <h3>Payment #${payment.id}</h3>
+
+            <p>
+                Method: ${payment.method}
+            </p>
+
+            <p>
+                Amount: ₨${Number(payment.amount).toFixed(0)}
+            </p>
+
+            <p>
+                Transaction ID:
+                ${payment.transaction_id}
+            </p>
+
+            <button
+                class="btn"
+                onclick="approvePayment(${payment.id})">
+                Approve
+            </button>
+
+            <button
+                class="btn"
+                onclick="rejectPayment(${payment.id})">
+                Reject
+            </button>
+        `;
+
+        paymentsList.appendChild(div);
+    });
+}
+
+
+async function approvePayment(id) {
+
+    const { error } =
+        await supabaseClient
+        .from("payments")
+        .update({
+            status: "Approved"
+        })
+        .eq("id", id);
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    alert("Payment approved.");
+
+    loadPayments();
+}
+
+
+async function rejectPayment(id) {
+
+    const { error } =
+        await supabaseClient
+        .from("payments")
+        .update({
+            status: "Rejected"
+        })
+        .eq("id", id);
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    alert("Payment rejected.");
+
+    loadPayments();
+}
 checkAdmin();
 
 </script>
