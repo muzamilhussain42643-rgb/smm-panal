@@ -1,102 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment - SMM Panel</title>
+
+    <title>Add Funds - SMM Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 
 <body>
 
 <nav class="navbar">
-    <div class="logo">SMM PANEL</div>
+
+    <div class="logo">
+        SMM PANEL
+    </div>
 
     <div>
+        <a href="index.html">Home</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="services.html">Services</a>
-        <a href="orders.html">Orders</a>
+        <a href="my-orders.html">My Orders</a>
         <a href="profile.html">Profile</a>
     </div>
+
 </nav>
 
 <main class="container">
 
     <div class="form-box">
 
-        <h2>💳 Add Funds</h2>
+        <h2>Add Funds</h2>
 
-        <p style="margin-bottom:20px; text-align:center;">
-            Select a payment method and follow the instructions.
+        <p>
+            Submit your payment details. Your payment will be
+            reviewed before funds are added.
         </p>
 
-        <label>Payment Method</label>
+        <form id="paymentForm">
 
-        <select id="paymentMethod" required>
-            <option value="">Select Payment Method</option>
-            <option>EasyPaisa</option>
-            <option>JazzCash</option>
-            <option>Bank Transfer</option>
-        </select>
+            <label>Payment Method</label>
 
-        <label>Amount</label>
+            <select id="method" required>
 
-        <input
-            type="number"
-            id="amount"
-            placeholder="Enter amount"
-            min="1"
-            required
-        >
+                <option value="">
+                    Select Payment Method
+                </option>
 
-        <button class="btn" onclick="submitPayment()">
-            Submit Payment Request
-        </button>
+                <option value="JazzCash">
+                    JazzCash
+                </option>
 
-        <p id="paymentMessage" style="margin-top:15px;"></p>
+                <option value="Easypaisa">
+                    Easypaisa
+                </option>
 
-    </div>
+                <option value="Bank Transfer">
+                    Bank Transfer
+                </option>
 
-    <div class="card" style="margin-top:25px;">
+            </select>
 
-        <h3>Payment Instructions</h3>
+            <label>Amount (PKR)</label>
 
-        <p style="margin-top:12px;">
-            Payment account details will be displayed here.
-        </p>
+            <input
+                type="number"
+                id="amount"
+                min="1"
+                placeholder="Enter amount"
+                required
+            >
 
-        <p style="margin-top:12px;">
-            After making payment, contact support and provide
-            your payment reference.
-        </p>
+            <label>Transaction ID</label>
 
-        <br>
+            <input
+                type="text"
+                id="transactionId"
+                placeholder="Enter transaction ID"
+                required
+            >
 
-        <a
-            href="https://wa.me/923156211226"
-            target="_blank"
-            class="btn"
-        >
-            WhatsApp Support
-        </a>
+            <button
+                type="submit"
+                class="btn">
+                Submit Payment
+            </button>
+
+        </form>
+
+        <p id="message"></p>
 
     </div>
 
 </main>
 
-<a
-    class="whatsapp"
-    href="https://wa.me/923156211226"
-    target="_blank"
->
-    WhatsApp Support
-</a>
-
 <footer class="footer">
     <p>© 2026 SMM Panel. All Rights Reserved.</p>
 </footer>
 
-<script src="script.js"></script>
+<script>
+
+const paymentForm =
+    document.getElementById("paymentForm");
+
+paymentForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const message =
+            document.getElementById("message");
+
+        message.textContent =
+            "Submitting payment...";
+
+        const {
+            data: {
+                user
+            }
+        } = await supabaseClient.auth.getUser();
+
+        if (!user) {
+
+            message.textContent =
+                "Please login first.";
+
+            return;
+        }
+
+        const method =
+            document.getElementById("method").value;
+
+        const amount =
+            Number(
+                document.getElementById("amount").value
+            );
+
+        const transactionId =
+            document.getElementById("transactionId")
+            .value.trim();
+
+        if (!method || !amount || !transactionId) {
+
+            message.textContent =
+                "Please fill all fields.";
+
+            return;
+        }
+
+        if (amount <= 0) {
+
+            message.textContent =
+                "Amount must be greater than 0.";
+
+            return;
+        }
+
+        const {
+            error
+        } = await supabaseClient
+            .from("payments")
+            .insert({
+                user_id: user.id,
+                method: method,
+                amount: amount,
+                transaction_id: transactionId,
+                status: "Pending"
+            });
+
+        if (error) {
+
+            console.error(error);
+
+            message.textContent =
+                error.message;
+
+            return;
+        }
+
+        message.textContent =
+            "Payment request submitted successfully. Waiting for admin approval.";
+
+        paymentForm.reset();
+    }
+);
+
+</script>
 
 </body>
 </html>
