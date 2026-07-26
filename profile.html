@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SMM Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+<nav class="navbar">
+    <div class="logo">SMM PANEL</div>
+
+    <div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="orders.html">Orders</a>
+        <a href="profile.html">Profile</a>
+        <a href="index.html">Logout</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <div class="form-box">
+
+        <h2>My Profile</h2>
+
+        <label>Full Name</label>
+        <input
+            type="text"
+            id="profileName"
+            placeholder="Your name"
+        >
+
+        <label>Email</label>
+        <input
+            type="email"
+            id="profileEmail"
+            placeholder="Your email"
+        >
+
+        <button class="btn" onclick="saveProfile()">
+            Save Profile
+        </button>
+
+        <p id="profileMessage" style="margin-top:15px;"></p>
+
+        <hr style="margin:25px 0;">
+
+        <h3>Account</h3>
+
+        <p style="margin-top:10px;">
+            Balance: <strong>$0.00</strong>
+        </p>
+
+        <p style="margin-top:10px;">
+            Account Status: <strong>Active</strong>
+        </p>
+
+    </div>
+
+</main>
+
+<a
+    class="whatsapp"
+    href="https://wa.me/923156211226"
+    target="_blank"
+>
+    WhatsApp Support
+</a>
+
+<footer class="footer">
+    <p>© 2026 SMM Panel. All Rights Reserved.</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
