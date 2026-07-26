@@ -1,47 +1,73 @@
-body {
-    margin: 0;
-    padding: 0;
-    background: #0f172a;
-    font-family: Arial, sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
 }
 
-.login-container {
-    width: 350px;
-    margin: 100px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0,0,0,.3);
+body{
+    background:#0f172a;
+    color:#fff;
 }
 
-h1 {
-    color: #2563eb;
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:240px;
+    height:100vh;
+    background:#111827;
+    padding:25px;
 }
 
-p {
-    color: #666;
+.sidebar h2{
+    color:#3b82f6;
+    margin-bottom:30px;
+    text-align:center;
 }
 
-input {
-    width: 90%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.sidebar a{
+    display:block;
+    color:#fff;
+    text-decoration:none;
+    padding:14px;
+    margin:10px 0;
+    border-radius:10px;
+    transition:.3s;
 }
 
-button {
-    width: 95%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
+.sidebar a:hover{
+    background:#2563eb;
 }
 
-button:hover {
-    background: #1d4ed8;
+.main{
+    margin-left:260px;
+    padding:30px;
+}
+
+.main h1{
+    margin-bottom:25px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#1e293b;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,.3);
+}
+
+.card h3{
+    color:#cbd5e1;
+    margin-bottom:10px;
+}
+
+.card h2{
+    color:#3b82f6;
+    font-size:30px;
 }
