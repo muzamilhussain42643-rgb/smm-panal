@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,10 @@
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- Supabase -->
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Your config -->
+    <!-- Supabase Config -->
     <script src="config.js"></script>
 </head>
 
@@ -130,6 +131,8 @@ registerForm.addEventListener("submit", async function(event) {
         return;
     }
 
+    message.textContent = "Creating account...";
+
     const { data, error } =
         await supabaseClient.auth.signUp({
             email: email,
@@ -147,7 +150,7 @@ registerForm.addEventListener("submit", async function(event) {
     }
 
     message.textContent =
-        "Account created successfully! Check your email for verification.";
+        "Account created! Please check your email for verification.";
 
     registerForm.reset();
 
