@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://fqveilqmnzsbhlviexla";
+const SUPABASE_URL = "https://fqveilqmnzsbhlviexla.supabase.co";
 
 const SUPABASE_KEY = "sb_publishable_981QCbTTCWmSQdbXewen2Q_4qx5sobD";
 
