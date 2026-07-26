@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Profile - SMM Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 
 <body>
@@ -13,11 +18,11 @@
     <div class="logo">SMM PANEL</div>
 
     <div>
+        <a href="index.html">Home</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="services.html">Services</a>
-        <a href="orders.html">Orders</a>
+        <a href="my-orders.html">My Orders</a>
         <a href="profile.html">Profile</a>
-        <a href="index.html">Logout</a>
     </div>
 </nav>
 
@@ -28,54 +33,101 @@
         <h2>My Profile</h2>
 
         <label>Full Name</label>
-        <input
-            type="text"
-            id="profileName"
-            placeholder="Your name"
-        >
+        <input type="text" id="name">
 
         <label>Email</label>
-        <input
-            type="email"
-            id="profileEmail"
-            placeholder="Your email"
-        >
+        <input type="email" id="email" readonly>
 
-        <button class="btn" onclick="saveProfile()">
+        <button id="saveBtn" class="btn">
             Save Profile
         </button>
 
-        <p id="profileMessage" style="margin-top:15px;"></p>
+        <p id="message"></p>
 
         <hr style="margin:25px 0;">
 
-        <h3>Account</h3>
-
-        <p style="margin-top:10px;">
-            Balance: <strong>$0.00</strong>
-        </p>
-
-        <p style="margin-top:10px;">
-            Account Status: <strong>Active</strong>
-        </p>
+        <button id="logoutBtn" class="btn">
+            Logout
+        </button>
 
     </div>
 
 </main>
 
-<a
-    class="whatsapp"
-    href="https://wa.me/923156211226"
-    target="_blank"
->
-    WhatsApp Support
-</a>
+<script>
 
-<footer class="footer">
-    <p>© 2026 SMM Panel. All Rights Reserved.</p>
-</footer>
+let currentUser = null;
 
-<script src="script.js"></script>
+async function loadProfile() {
+
+    const {
+        data: {
+            user
+        }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    document.getElementById("email").value =
+        user.email || "";
+
+    document.getElementById("name").value =
+        user.user_metadata?.full_name || "";
+}
+
+
+document.getElementById("saveBtn")
+.addEventListener("click", async function() {
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const message =
+        document.getElementById("message");
+
+    if (!name) {
+        message.textContent =
+            "Please enter your name.";
+        return;
+    }
+
+    const {
+        error
+    } = await supabaseClient.auth.updateUser({
+        data: {
+            full_name: name
+        }
+    });
+
+    if (error) {
+        message.textContent =
+            error.message;
+        return;
+    }
+
+    message.textContent =
+        "Profile updated successfully.";
+});
+
+
+document.getElementById("logoutBtn")
+.addEventListener("click", async function() {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href =
+        "login.html";
+});
+
+
+loadProfile();
+
+</script>
 
 </body>
 </html>
