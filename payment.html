@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - SMM Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">SMM PANEL</div>
+
+    <div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="orders.html">Orders</a>
+        <a href="profile.html">Profile</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <div class="form-box">
+
+        <h2>💳 Add Funds</h2>
+
+        <p style="margin-bottom:20px; text-align:center;">
+            Select a payment method and follow the instructions.
+        </p>
+
+        <label>Payment Method</label>
+
+        <select id="paymentMethod" required>
+            <option value="">Select Payment Method</option>
+            <option>EasyPaisa</option>
+            <option>JazzCash</option>
+            <option>Bank Transfer</option>
+        </select>
+
+        <label>Amount</label>
+
+        <input
+            type="number"
+            id="amount"
+            placeholder="Enter amount"
+            min="1"
+            required
+        >
+
+        <button class="btn" onclick="submitPayment()">
+            Submit Payment Request
+        </button>
+
+        <p id="paymentMessage" style="margin-top:15px;"></p>
+
+    </div>
+
+    <div class="card" style="margin-top:25px;">
+
+        <h3>Payment Instructions</h3>
+
+        <p style="margin-top:12px;">
+            Payment account details will be displayed here.
+        </p>
+
+        <p style="margin-top:12px;">
+            After making payment, contact support and provide
+            your payment reference.
+        </p>
+
+        <br>
+
+        <a
+            href="https://wa.me/923156211226"
+            target="_blank"
+            class="btn"
+        >
+            WhatsApp Support
+        </a>
+
+    </div>
+
+</main>
+
+<a
+    class="whatsapp"
+    href="https://wa.me/923156211226"
+    target="_blank"
+>
+    WhatsApp Support
+</a>
+
+<footer class="footer">
+    <p>© 2026 SMM Panel. All Rights Reserved.</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
