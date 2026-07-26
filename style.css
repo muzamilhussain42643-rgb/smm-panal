@@ -1,46 +1,48 @@
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f2f2f2;
+}
+
+.dashboard{
+    width:90%;
+    max-width:500px;
+    margin:30px auto;
+}
+
+h1{
+    text-align:center;
+}
+
 .card{
-    transition:0.3s;
-    border:1px solid #334155;
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:10px;
+    box-shadow:0 0 10px #ccc;
 }
 
-.card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 10px 25px rgba(59,130,246,.35);
-}
-
-.card p{
-    color:#cbd5e1;
+input, select, button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
 }
 
 button{
-    background:#2563eb;
-    color:#fff;
+    background:#008000;
+    color:white;
     border:none;
-    padding:12px 20px;
-    border-radius:10px;
     cursor:pointer;
-    transition:.3s;
 }
 
-button:hover{
-    background:#1d4ed8;
-}
-
-@media (max-width:768px){
-
-.sidebar{
-    width:100%;
-    height:auto;
-    position:relative;
-}
-
-.main{
-    margin-left:0;
-    padding:20px;
-}
-
-.cards{
-    grid-template-columns:1fr;
-}
-
+.whatsapp{
+    display:block;
+    text-align:center;
+    background:#25D366;
+    color:white;
+    padding:15px;
+    text-decoration:none;
+    border-radius:8px;
 }
