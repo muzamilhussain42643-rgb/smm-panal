@@ -1,53 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMM Panel Login</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMM Panel - Social Media Services</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="login-container">
+    <nav class="navbar">
+        <div class="logo">SMM PANEL</div>
 
-<h1>SMM PANEL</h1>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="register.html">Register</a>
+            <a href="dashboard.html">Login</a>
+        </div>
+    </nav>
 
-<input type="text" id="loginUsername" placeholder="Username">
+    <main class="container">
 
-<input type="password" id="loginPassword" placeholder="Password">
+        <section class="hero">
+            <h1>Grow Your Social Media</h1>
 
-<button onclick="login()">Login</button>
+            <p>
+                Fast and reliable social media services for
+                TikTok, Instagram, YouTube and more.
+            </p>
 
-<p>
-<a href="register.html">Create New Account</a>
-</p>
+            <a href="register.html" class="btn">
+                Get Started
+            </a>
+        </section>
 
-</div>
+        <section>
+            <h2 style="text-align:center; margin-top:40px;">
+                Our Services
+            </h2>
 
+            <div class="cards">
 
-<script>
-function login(){
+                <div class="card">
+                    <h3>🎵 TikTok</h3>
+                    <p>Social media services for TikTok.</p>
+                </div>
 
-let username = document.getElementById("loginUsername").value;
-let password = document.getElementById("loginPassword").value;
+                <div class="card">
+                    <h3>📸 Instagram</h3>
+                    <p>Services for Instagram accounts.</p>
+                </div>
 
-let savedUser = localStorage.getItem("username");
-let savedPass = localStorage.getItem("password");
+                <div class="card">
+                    <h3>▶️ YouTube</h3>
+                    <p>Services for YouTube channels.</p>
+                </div>
 
-if(username == savedUser && password == savedPass){
+            </div>
+        </section>
 
-alert("Login Successful");
-window.location.href="dashboard.html";
+        <section>
+            <h2 style="text-align:center; margin-top:45px;">
+                Why Choose Us?
+            </h2>
 
-}else{
+            <div class="cards">
 
-alert("Wrong Username or Password");
+                <div class="card">
+                    <h3>⚡ Fast Service</h3>
+                    <p>Orders are processed quickly.</p>
+                </div>
 
-}
+                <div class="card">
+                    <h3>🔒 Secure</h3>
+                    <p>Your account information stays protected.</p>
+                </div>
 
-}
-</script>
+                <div class="card">
+                    <h3>💬 Support</h3>
+                    <p>Contact us through WhatsApp support.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <a
+        class="whatsapp"
+        href="https://wa.me/923156211226"
+        target="_blank"
+    >
+        WhatsApp Support
+    </a>
+
+    <footer class="footer">
+        <p>© 2026 SMM Panel. All Rights Reserved.</p>
+    </footer>
 
 </body>
 </html>
