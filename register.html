@@ -145,9 +145,16 @@ registerForm.addEventListener("submit", async function(event) {
         });
 
     if (error) {
-        message.textContent = error.message;
-        return;
-    }
+       if (error) {
+    console.error("Supabase signup error:", error);
+
+    message.textContent =
+        error.message ||
+        error.error_description ||
+        "Registration failed. Please try again.";
+
+    return;
+}
 
     message.textContent =
         "Account created! Please check your email for verification.";
