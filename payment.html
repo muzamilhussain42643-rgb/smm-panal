@@ -1,141 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Add Funds - SMM Panel</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-</head>
-
-<body>
-
-<nav class="navbar">
-    <div class="logo">SMM PANEL</div>
-
-    <div>
-        <a href="index.html">Home</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="services.html">Services</a>
-        <a href="my-orders.html">My Orders</a>
-        <a href="payment.html">Add Funds</a>
-        <a href="profile.html">Profile</a>
-    </div>
-</nav>
-
-<main class="container">
-
-    <div class="form-box">
-
-        <h2>💰 Add Funds</h2>
-
-        <p>Select payment method and submit your payment details.</p>
-
-        <form id="paymentForm">
-
-            <label>Payment Method</label>
-
-            <select id="method" required>
-                <option value="">Select Method</option>
-                <option value="JazzCash">JazzCash</option>
-                <option value="Easypaisa">Easypaisa</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-            </select>
-
-            <label>Amount (PKR)</label>
-
-            <input
-                type="number"
-                id="amount"
-                min="1"
-                placeholder="Enter amount"
-                required
-            >
-
-            <label>Transaction ID</label>
-
-            <input
-                type="text"
-                id="transactionId"
-                placeholder="Enter transaction ID"
-                required
-            >
-
-            <button type="submit" class="btn">
-                Submit Payment
-            </button>
-
-        </form>
-
-        <p id="message"></p>
-
-    </div>
-
-</main>
-
 <script>
+const paymentMethod = document.getElementById("paymentMethod");
+const paymentDetails = document.getElementById("paymentDetails");
 
-const form = document.getElementById("paymentForm");
-const message = document.getElementById("message");
-
-form.addEventListener("submit", async function(e) {
-
-    e.preventDefault();
-
-    message.textContent = "Submitting...";
-
-    const {
-        data: { user }
-    } = await supabaseClient.auth.getUser();
-
-    if (!user) {
-        message.textContent = "Please login first.";
-        return;
+paymentMethod.addEventListener("change", function () {
+    if (this.value === "Easypaisa") {
+        paymentDetails.innerHTML = `
+            <b>EasyPaisa Payment Details</b><br><br>
+            <b>Account Number:</b> 03336291333<br>
+            <b>Account Title:</b> Abid Hussain Abid
+        `;
+        paymentDetails.style.display = "block";
+    } else {
+        paymentDetails.style.display = "none";
     }
-
-    const method =
-        document.getElementById("method").value;
-
-    const amount =
-        Number(document.getElementById("amount").value);
-
-    const transactionId =
-        document.getElementById("transactionId")
-        .value.trim();
-
-    if (!method || !amount || !transactionId) {
-        message.textContent =
-            "Please fill all fields.";
-        return;
-    }
-
-    const { error } = await supabaseClient
-        .from("payments")
-        .insert({
-            user_id: user.id,
-            method: method,
-            amount: amount,
-            transaction_id: transactionId,
-            status: "Pending"
-        });
-
-    if (error) {
-        console.error(error);
-        message.textContent = error.message;
-        return;
-    }
-
-    message.textContent =
-        "Payment request submitted successfully!";
-
-    form.reset();
 });
-
 </script>
-
-</body>
-</html>
