@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - SMM Panel</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">SMM PANEL</div>
+
+    <div>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="profile.html">Profile</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <h2>My Orders</h2>
+
+    <div id="ordersList">
+        <p>Loading orders...</p>
+    </div>
+
+</main>
+
+<script>
+
+async function loadOrders() {
+
+    const ordersList =
+        document.getElementById("ordersList");
+
+    const {
+        data: {
+            user
+        }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        ordersList.innerHTML = `
+            <p>Please login first.</p>
+            <a href="login.html">Login</a>
+        `;
+        return;
+    }
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("orders")
+        .select(`
+            id,
+            link,
+            quantity,
+            amount,
+            status,
+            created_at,
+            services (
+                name,
+                platform
+            )
+        `)
+        .eq("user_id", user.id)
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+        console.error(error);
+
+        ordersList.innerHTML =
+            "<p>Unable to load orders.</p>";
+
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        ordersList.innerHTML =
+            "<p>You have no orders yet.</p>";
+
+        return;
+    }
+
+    ordersList.innerHTML = "";
+
+    data.forEach(order => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+            <h3>
+                Order #${order.id}
+            </h3>
+
+            <p>
+                <strong>Service:</strong>
+                ${order.services?.name || "Service"}
+            </p>
+
+            <p>
+                <strong>Platform:</strong>
+                ${order.services?.platform || "-"}
+            </p>
+
+            <p>
+                <strong>Link:</strong>
+                ${order.link}
+            </p>
+
+            <p>
+                <strong>Quantity:</strong>
+                ${order.quantity}
+            </p>
+
+            <p>
+                <strong>Amount:</strong>
+                ₨${Number(order.amount).toFixed(0)}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                ${order.status}
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                ${new Date(order.created_at).toLocaleString()}
+            </p>
+        `;
+
+        ordersList.appendChild(card);
+    });
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>
