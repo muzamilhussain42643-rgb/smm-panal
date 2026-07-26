@@ -25,70 +25,114 @@
         <a href="dashboard.html">Dashboard</a>
         <a href="services.html">Services</a>
         <a href="my-orders.html">My Orders</a>
-
-        <!-- PAYMENT LINKS -->
-        <a href="payment.html">💰 Add Funds</a>
-        <a href="payment.html">💳 Payment</a>
-
+        <a href="payment.html">Add Funds</a>
+        <a href="payment.html">Payment</a>
         <a href="profile.html">Profile</a>
-
-        <button id="logoutBtn" class="btn">
-            Logout
-        </button>
     </div>
 
 </nav>
 
 <main class="container">
 
-    <h2>Dashboard</h2>
+    <h1>Dashboard</h1>
 
     <p id="welcome">Loading...</p>
 
-    <!-- QUICK BUTTONS -->
+    <!-- QUICK ACTIONS -->
 
     <div class="cards">
 
         <div class="card">
-            <h3>💰 Add Funds</h3>
-            <p>Add money to your account</p>
+            <h2>💰 Add Funds</h2>
+
+            <p>
+                Add money to your SMM Panel account.
+            </p>
 
             <a href="payment.html" class="btn">
                 Add Funds
             </a>
         </div>
 
+
         <div class="card">
-            <h3>💳 Payment</h3>
-            <p>Submit payment request</p>
+            <h2>💳 Payment</h2>
+
+            <p>
+                Submit your payment transaction.
+            </p>
 
             <a href="payment.html" class="btn">
-                Payment
+                Make Payment
             </a>
         </div>
 
+
         <div class="card">
-            <h3>📦 Total Orders</h3>
+            <h2>📦 Services</h2>
+
+            <p>
+                View available social media services.
+            </p>
+
+            <a href="services.html" class="btn">
+                View Services
+            </a>
+        </div>
+
+
+        <div class="card">
+            <h2>📋 My Orders</h2>
+
+            <p>
+                View your previous orders.
+            </p>
+
+            <a href="my-orders.html" class="btn">
+                My Orders
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- ACCOUNT STATS -->
+
+    <h2 style="margin-top:40px;">
+        Account Overview
+    </h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Total Orders</h3>
             <p id="totalOrders">0</p>
         </div>
 
         <div class="card">
-            <h3>⏳ Pending Orders</h3>
+            <h3>Pending Orders</h3>
             <p id="pendingOrders">0</p>
         </div>
 
         <div class="card">
-            <h3>💵 Total Spent</h3>
+            <h3>Total Spent</h3>
             <p id="totalSpent">₨0</p>
         </div>
 
     </div>
 
+
+    <button id="logoutBtn" class="btn" style="margin-top:30px;">
+        Logout
+    </button>
+
 </main>
+
 
 <footer class="footer">
     <p>© 2026 SMM Panel. All Rights Reserved.</p>
 </footer>
+
 
 <script>
 
@@ -107,6 +151,7 @@ async function loadDashboard() {
         "Welcome, " +
         (user.user_metadata?.full_name || user.email);
 
+
     const {
         data: orders,
         error
@@ -115,31 +160,43 @@ async function loadDashboard() {
         .select("id, amount, status")
         .eq("user_id", user.id);
 
+
     if (error) {
         console.error(error);
         return;
     }
 
-    const total = orders.length;
 
-    const pending = orders.filter(
-        order => order.status === "Pending"
-    ).length;
+    const total =
+        orders.length;
 
-    const spent = orders.reduce(
-        (sum, order) =>
-            sum + Number(order.amount || 0),
-        0
-    );
 
-    document.getElementById("totalOrders").textContent =
-        total;
+    const pending =
+        orders.filter(
+            order => order.status === "Pending"
+        ).length;
 
-    document.getElementById("pendingOrders").textContent =
-        pending;
 
-    document.getElementById("totalSpent").textContent =
+    const spent =
+        orders.reduce(
+            (sum, order) =>
+                sum + Number(order.amount || 0),
+            0
+        );
+
+
+    document.getElementById("totalOrders")
+        .textContent = total;
+
+
+    document.getElementById("pendingOrders")
+        .textContent = pending;
+
+
+    document.getElementById("totalSpent")
+        .textContent =
         "₨" + spent.toFixed(0);
+
 }
 
 
