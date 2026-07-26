@@ -1,53 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMM Panel Register</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - SMM Panel</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="login-container">
+<nav class="navbar">
+    <div class="logo">SMM PANEL</div>
 
-<h1>Create Account</h1>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="register.html">Register</a>
+        <a href="dashboard.html">Login</a>
+    </div>
+</nav>
 
-<input type="text" id="username" placeholder="Username">
+<main class="container">
 
-<input type="password" id="password" placeholder="Password">
+    <div class="form-box">
 
+        <h2>Create Account</h2>
 
-<button onclick="register()">Create Account</button>
+        <form id="registerForm">
 
+            <label>Full Name</label>
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your name"
+                required
+            >
 
-<p>
-<a href="index.html">Already have account? Login</a>
-</p>
+            <label>Email</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+            >
 
-</div>
+            <label>Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Create password"
+                minlength="6"
+                required
+            >
 
+            <label>Confirm Password</label>
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                minlength="6"
+                required
+            >
 
-<script>
+            <button type="submit" class="btn">
+                Create Account
+            </button>
 
-function register(){
+        </form>
 
-let user = document.getElementById("username").value;
-let pass = document.getElementById("password").value;
+        <p id="message" style="margin-top:15px;"></p>
 
+        <p style="margin-top:20px; text-align:center;">
+            Already have an account?
+            <a href="dashboard.html">Login</a>
+        </p>
 
-localStorage.setItem("username", user);
-localStorage.setItem("password", pass);
+    </div>
 
+</main>
 
-alert("Account Created Successfully");
+<a
+    class="whatsapp"
+    href="https://wa.me/923156211226"
+    target="_blank"
+>
+    WhatsApp Support
+</a>
 
-window.location.href="index.html";
+<footer class="footer">
+    <p>© 2026 SMM Panel. All Rights Reserved.</p>
+</footer>
 
-}
-
-</script>
-
+<script src="script.js"></script>
 
 </body>
 </html>
