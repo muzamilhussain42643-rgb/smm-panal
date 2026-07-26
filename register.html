@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register - SMM Panel</title>
+<title>SMM Panel Register</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -11,20 +11,15 @@
 
 <div class="login-container">
 
-<h1>SMM PANEL</h1>
-<p>Create New Account</p>
+<h1>Create Account</h1>
 
-<input type="text" placeholder="Full Name">
+<input type="text" id="username" placeholder="Username">
 
-<input type="email" placeholder="Email Address">
+<input type="password" id="password" placeholder="Password">
 
-<input type="text" placeholder="Username">
-
-<input type="password" placeholder="Password">
-
-<input type="password" placeholder="Confirm Password">
 
 <button onclick="register()">Create Account</button>
+
 
 <p>
 <a href="index.html">Already have account? Login</a>
@@ -34,17 +29,25 @@
 
 
 <script>
+
 function register(){
-    alert("Account Created Successfully!");
-    window.location.href="index.html";
+
+let user = document.getElementById("username").value;
+let pass = document.getElementById("password").value;
+
+
+localStorage.setItem("username", user);
+localStorage.setItem("password", pass);
+
+
+alert("Account Created Successfully");
+
+window.location.href="index.html";
+
 }
+
 </script>
 
-<script>
-function register(){
-    alert("Account Created Successfully!");
-    window.location.href="index.html";
-}
-</script>
+
 </body>
 </html>
