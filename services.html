@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Services - SMM Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 
 <body>
@@ -13,92 +18,111 @@
     <div class="logo">SMM PANEL</div>
 
     <div>
+        <a href="index.html">Home</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="services.html">Services</a>
-        <a href="orders.html">Orders</a>
-        <a href="profile.html">Profile</a>
-        <a href="index.html">Logout</a>
+        <a href="login.html">Login</a>
     </div>
 </nav>
 
 <main class="container">
 
-    <section class="hero">
-        <h1>Social Media Services</h1>
-        <p>Choose a service and place your order.</p>
-    </section>
+    <h2>Our Services</h2>
 
-    <div class="cards">
-
-        <div class="card">
-            <h3>🎵 TikTok</h3>
-            <p>Service: TikTok Social Media Promotion</p>
-            <p><strong>Starting from $1.00</strong></p>
-            <br>
-            <a href="orders.html" class="btn">Order Now</a>
-        </div>
-
-        <div class="card">
-            <h3>📸 Instagram</h3>
-            <p>Service: Instagram Social Media Promotion</p>
-            <p><strong>Starting from $1.00</strong></p>
-            <br>
-            <a href="orders.html" class="btn">Order Now</a>
-        </div>
-
-        <div class="card">
-            <h3>▶️ YouTube</h3>
-            <p>Service: YouTube Social Media Promotion</p>
-            <p><strong>Starting from $1.00</strong></p>
-            <br>
-            <a href="orders.html" class="btn">Order Now</a>
-        </div>
-
-        <div class="card">
-            <h3>📘 Facebook</h3>
-            <p>Service: Facebook Social Media Promotion</p>
-            <p><strong>Starting from $1.00</strong></p>
-            <br>
-            <a href="orders.html" class="btn">Order Now</a>
-        </div>
-
-        <div class="card">
-            <h3>💬 WhatsApp</h3>
-            <p>Service: WhatsApp Promotion</p>
-            <p><strong>Starting from $1.00</strong></p>
-            <br>
-            <a href="orders.html" class="btn">Order Now</a>
-        </div>
-
-        <div class="card">
-            <h3>🌐 Other Services</h3>
-            <p>More social media services coming soon.</p>
-            <p><strong>Contact Support</strong></p>
-            <br>
-            <a
-                href="https://wa.me/923156211226"
-                target="_blank"
-                class="btn"
-            >
-                Ask Support
-            </a>
-        </div>
-
+    <div id="servicesList" class="cards">
+        <p>Loading services...</p>
     </div>
 
 </main>
 
-<a
-    class="whatsapp"
-    href="https://wa.me/923156211226"
-    target="_blank"
->
-    WhatsApp Support
-</a>
-
 <footer class="footer">
     <p>© 2026 SMM Panel. All Rights Reserved.</p>
 </footer>
+
+<script>
+
+async function loadServices() {
+
+    const servicesList =
+        document.getElementById("servicesList");
+
+    const { data, error } =
+        await supabaseClient
+        .from("services")
+        .select("*")
+        .eq("active", true)
+        .order("id", { ascending: true });
+
+    if (error) {
+        console.error(error);
+
+        servicesList.innerHTML =
+            "<p>Unable to load services.</p>";
+
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        servicesList.innerHTML =
+            "<p>No services available.</p>";
+
+        return;
+    }
+
+    servicesList.innerHTML = "";
+
+    data.forEach(service => {
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+            <h3>${service.name}</h3>
+
+            <p>
+                <strong>Platform:</strong>
+                ${service.platform}
+            </p>
+
+            <p>
+                ${service.description || ""}
+            </p>
+
+            <p>
+                <strong>Price:</strong>
+                $${Number(service.price).toFixed(2)}
+            </p>
+
+            <p>
+                <strong>Minimum:</strong>
+                ${service.min_order}
+            </p>
+
+            <p>
+                <strong>Maximum:</strong>
+                ${service.max_order}
+            </p>
+
+            <button
+                class="btn"
+                onclick="orderService(${service.id})">
+                Order Now
+            </button>
+        `;
+
+        servicesList.appendChild(card);
+    });
+}
+
+function orderService(serviceId) {
+    window.location.href =
+        "orders.html?service=" + serviceId;
+}
+
+loadServices();
+
+</script>
 
 </body>
 </html>
