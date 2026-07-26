@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders - SMM Panel</title>
+
+    <title>Place Order - SMM Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 
 <body>
@@ -13,11 +18,10 @@
     <div class="logo">SMM PANEL</div>
 
     <div>
+        <a href="index.html">Home</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="services.html">Services</a>
-        <a href="orders.html">Orders</a>
         <a href="profile.html">Profile</a>
-        <a href="index.html">Logout</a>
     </div>
 </nav>
 
@@ -29,18 +33,13 @@
 
         <form id="orderForm">
 
-            <label>Choose Service</label>
+            <label>Service</label>
 
             <select id="service" required>
-                <option value="">Select a service</option>
-                <option>TikTok Promotion</option>
-                <option>Instagram Promotion</option>
-                <option>YouTube Promotion</option>
-                <option>Facebook Promotion</option>
-                <option>WhatsApp Promotion</option>
+                <option value="">Loading services...</option>
             </select>
 
-            <label>Link</label>
+            <label>Social Media Link</label>
 
             <input
                 type="url"
@@ -54,10 +53,20 @@
             <input
                 type="number"
                 id="quantity"
-                placeholder="Enter quantity"
                 min="1"
+                placeholder="Enter quantity"
                 required
             >
+
+            <p>
+                Price:
+                <strong id="price">₨0</strong>
+            </p>
+
+            <p>
+                Total:
+                <strong id="total">₨0</strong>
+            </p>
 
             <button type="submit" class="btn">
                 Place Order
@@ -65,52 +74,199 @@
 
         </form>
 
-        <p id="orderMessage" style="margin-top:15px;"></p>
+        <p id="message"></p>
 
     </div>
 
-    <h2 style="margin-top:40px;">
-        My Orders
-    </h2>
-
-    <table>
-
-        <thead>
-            <tr>
-                <th>Service</th>
-                <th>Link</th>
-                <th>Quantity</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-
-        <tbody id="ordersTable">
-
-            <tr>
-                <td colspan="4" style="text-align:center;">
-                    No orders yet
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
 </main>
 
-<a
-    class="whatsapp"
-    href="https://wa.me/923156211226"
-    target="_blank"
->
-    WhatsApp Support
-</a>
+<script>
 
-<footer class="footer">
-    <p>© 2026 SMM Panel. All Rights Reserved.</p>
-</footer>
+let services = [];
 
-<script src="script.js"></script>
+const serviceSelect =
+    document.getElementById("service");
+
+const quantityInput =
+    document.getElementById("quantity");
+
+const priceText =
+    document.getElementById("price");
+
+const totalText =
+    document.getElementById("total");
+
+const orderForm =
+    document.getElementById("orderForm");
+
+const message =
+    document.getElementById("message");
+
+
+async function loadServices() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("services")
+        .select("*")
+        .eq("active", true)
+        .order("id");
+
+    if (error) {
+        console.error(error);
+        serviceSelect.innerHTML =
+            '<option value="">Unable to load services</option>';
+        return;
+    }
+
+    services = data || [];
+
+    serviceSelect.innerHTML =
+        '<option value="">Select a service</option>';
+
+    services.forEach(service => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = service.id;
+
+        option.textContent =
+            `${service.name} — ₨${Number(service.price).toFixed(0)}`;
+
+        serviceSelect.appendChild(option);
+    });
+}
+
+
+function calculateTotal() {
+
+    const selectedId =
+        Number(serviceSelect.value);
+
+    const service =
+        services.find(s => s.id === selectedId);
+
+    const quantity =
+        Number(quantityInput.value);
+
+    if (!service) {
+        priceText.textContent = "₨0";
+        totalText.textContent = "₨0";
+        return;
+    }
+
+    priceText.textContent =
+        `₨${Number(service.price).toFixed(0)}`;
+
+    const total =
+        Number(service.price) * quantity;
+
+    totalText.textContent =
+        `₨${Number(total).toFixed(0)}`;
+}
+
+
+serviceSelect.addEventListener(
+    "change",
+    calculateTotal
+);
+
+quantityInput.addEventListener(
+    "input",
+    calculateTotal
+);
+
+
+orderForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        message.textContent = "";
+
+        const {
+            data: {
+                user
+            }
+        } = await supabaseClient.auth.getUser();
+
+        if (!user) {
+            message.textContent =
+                "Please login before placing an order.";
+
+            return;
+        }
+
+        const serviceId =
+            Number(serviceSelect.value);
+
+        const service =
+            services.find(s => s.id === serviceId);
+
+        const link =
+            document.getElementById("link").value.trim();
+
+        const quantity =
+            Number(quantityInput.value);
+
+        if (!service) {
+            message.textContent =
+                "Please select a service.";
+
+            return;
+        }
+
+        if (
+            quantity < service.min_order ||
+            quantity > service.max_order
+        ) {
+            message.textContent =
+                `Quantity must be between ${service.min_order} and ${service.max_order}.`;
+
+            return;
+        }
+
+        const amount =
+            Number(service.price) * quantity;
+
+        const {
+            error
+        } = await supabaseClient
+            .from("orders")
+            .insert({
+                user_id: user.id,
+                service_id: service.id,
+                link: link,
+                quantity: quantity,
+                amount: amount,
+                status: "Pending"
+            });
+
+        if (error) {
+            console.error(error);
+
+            message.textContent =
+                "Order could not be placed.";
+
+            return;
+        }
+
+        message.textContent =
+            "Order placed successfully!";
+
+        orderForm.reset();
+
+        priceText.textContent = "₨0";
+        totalText.textContent = "₨0";
+    }
+);
+
+
+loadServices();
+
+</script>
 
 </body>
 </html>
