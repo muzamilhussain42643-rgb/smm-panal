@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Admin Panel - SMM Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 
 <body>
@@ -12,77 +17,166 @@
 <nav class="navbar">
     <div class="logo">SMM PANEL ADMIN</div>
 
-    <div>
+    <div class="nav-links">
         <a href="dashboard.html">Dashboard</a>
         <a href="services.html">Services</a>
-        <a href="orders.html">Orders</a>
-        <a href="index.html">Website</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="payment.html">Payments</a>
+        <a href="profile.html">Profile</a>
     </div>
 </nav>
 
 <main class="container">
 
-    <section class="hero">
-        <h1>Admin Dashboard</h1>
-        <p>Manage your SMM Panel.</p>
-    </section>
+    <h1>Admin Panel</h1>
+    <p id="adminMessage">Checking admin access...</p>
 
-    <div class="cards">
+    <div id="adminContent" style="display:none;">
 
-        <div class="card">
-            <h3>👥 Users</h3>
-            <p>Total Users</p>
-            <h2>0</h2>
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Users</h3>
+                <p id="userCount">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Orders</h3>
+                <p id="orderCount">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Pending Orders</h3>
+                <p id="pendingCount">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Pending Payments</h3>
+                <p id="paymentCount">0</p>
+            </div>
+
         </div>
 
-        <div class="card">
-            <h3>📦 Orders</h3>
-            <p>Total Orders</p>
-            <h2>0</h2>
+        <div class="card" style="margin-top:30px;">
+            <h2>Quick Actions</h2>
+
+            <p>Admin dashboard is ready.</p>
+
+            <a href="services.html" class="btn">
+                Manage Services
+            </a>
+
+            <a href="my-orders.html" class="btn">
+                View Orders
+            </a>
+
+            <a href="payment.html" class="btn">
+                View Payments
+            </a>
         </div>
-
-        <div class="card">
-            <h3>💰 Payments</h3>
-            <p>Pending Payments</p>
-            <h2>0</h2>
-        </div>
-
-    </div>
-
-    <div class="card" style="margin-top:25px;">
-
-        <h2>Recent Orders</h2>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Service</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <tr>
-                    <td colspan="4" style="text-align:center;">
-                        No orders available
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
 
     </div>
 
 </main>
 
-<footer class="footer">
-    <p>© 2026 SMM Panel Admin</p>
-</footer>
+<script>
+
+async function checkAdmin() {
+
+    const message =
+        document.getElementById("adminMessage");
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const {
+        data: admin,
+        error: adminError
+    } = await supabaseClient
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (adminError) {
+        console.error(adminError);
+        message.textContent =
+            "Unable to verify admin access.";
+        return;
+    }
+
+    if (!admin) {
+        message.textContent =
+            "Access denied. Admin only.";
+        return;
+    }
+
+    message.textContent =
+        "Welcome Admin: " + user.email;
+
+    document.getElementById("adminContent")
+        .style.display = "block";
+
+    loadStats();
+}
+
+
+async function loadStats() {
+
+    const { count: orders } =
+        await supabaseClient
+        .from("orders")
+        .select("*", {
+            count: "exact",
+            head: true
+        });
+
+    const { count: pending } =
+        await supabaseClient
+        .from("orders")
+        .select("*", {
+            count: "exact",
+            head: true
+        })
+        .eq("status", "Pending");
+
+    const { count: payments } =
+        await supabaseClient
+        .from("payments")
+        .select("*", {
+            count: "exact",
+            head: true
+        })
+        .eq("status", "Pending");
+
+    document.getElementById("orderCount")
+        .textContent = orders || 0;
+
+    document.getElementById("pendingCount")
+        .textContent = pending || 0;
+
+    document.getElementById("paymentCount")
+        .textContent = payments || 0;
+
+    /*
+      Supabase Auth users cannot safely be counted
+      from the browser with the public key.
+    */
+
+    document.getElementById("userCount")
+        .textContent = "—";
+}
+
+
+checkAdmin();
+
+</script>
 
 </body>
 </html>
