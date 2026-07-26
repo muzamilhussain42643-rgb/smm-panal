@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Register - SMM Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Your config -->
+    <script src="config.js"></script>
 </head>
 
 <body>
@@ -15,8 +23,7 @@
     <div>
         <a href="index.html">Home</a>
         <a href="services.html">Services</a>
-        <a href="register.html">Register</a>
-        <a href="dashboard.html">Login</a>
+        <a href="login.html">Login</a>
     </div>
 </nav>
 
@@ -29,6 +36,7 @@
         <form id="registerForm">
 
             <label>Full Name</label>
+
             <input
                 type="text"
                 id="name"
@@ -37,6 +45,7 @@
             >
 
             <label>Email</label>
+
             <input
                 type="email"
                 id="email"
@@ -45,15 +54,17 @@
             >
 
             <label>Password</label>
+
             <input
                 type="password"
                 id="password"
-                placeholder="Create password"
+                placeholder="Minimum 6 characters"
                 minlength="6"
                 required
             >
 
             <label>Confirm Password</label>
+
             <input
                 type="password"
                 id="confirmPassword"
@@ -72,7 +83,7 @@
 
         <p style="margin-top:20px; text-align:center;">
             Already have an account?
-            <a href="dashboard.html">Login</a>
+            <a href="login.html">Login</a>
         </p>
 
     </div>
@@ -82,8 +93,7 @@
 <a
     class="whatsapp"
     href="https://wa.me/923156211226"
-    target="_blank"
->
+    target="_blank">
     WhatsApp Support
 </a>
 
@@ -91,7 +101,59 @@
     <p>© 2026 SMM Panel. All Rights Reserved.</p>
 </footer>
 
-<script src="script.js"></script>
+<script>
+
+const registerForm = document.getElementById("registerForm");
+
+registerForm.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    const message = document.getElementById("message");
+
+    message.textContent = "";
+
+    if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
+        return;
+    }
+
+    if (password.length < 6) {
+        message.textContent =
+            "Password must be at least 6 characters.";
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    full_name: name
+                }
+            }
+        });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent =
+        "Account created successfully! Check your email for verification.";
+
+    registerForm.reset();
+
+});
+
+</script>
 
 </body>
 </html>
